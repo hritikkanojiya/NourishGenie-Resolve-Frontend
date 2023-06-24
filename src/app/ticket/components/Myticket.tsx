@@ -805,12 +805,17 @@ const Myticket = () => {
                                             </div>
                                             <div className="col padding-0">
                                                 <select style={{ height: "7px", width: "6px" }} className="form-select my-4" onChange={(e) => updateCompletedPercent(ticket._id, e)} name="sendto" defaultValue={'DEFAULT'} aria-label="Default select example">
-                                                    <option value="Default">{ticket.complete}</option>
-                                                    {(mappriority.get(ticket.complete) !== 0) && <option value="0">0%</option>}
+                                                    {/* <option value="Default">{ticket.complete}</option> */}
+                                                    <option value="0">0%</option>
+                                                    <option value="25">25%</option>
+                                                    <option value="50">50%</option>
+                                                    <option value="75">75%</option>
+                                                    <option value="100">100%</option>
+                                                    {/* {(mappriority.get(ticket.complete) !== 0) && <option value="0">0%</option>}
                                                     {(mappriority.get(ticket.complete) !== 25) && <option value="25">25%</option>}
                                                     {(mappriority.get(ticket.complete) !== 50) && <option value="50">50%</option>}
                                                     {(mappriority.get(ticket.complete) !== 75) && <option value="75">75%</option>}
-                                                    {(mappriority.get(ticket.complete) !== 100) && <option value="100">100%</option>}
+                                                    {(mappriority.get(ticket.complete) !== 100) && <option value="100">100%</option>} */}
                                                 </select>
                                             </div>
                                         </div>

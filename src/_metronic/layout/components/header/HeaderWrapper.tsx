@@ -32,7 +32,7 @@ export function HeaderWrapper() {
                 className='btn btn-icon btn-active-color-primary w-35px h-35px'
                 id='kt_app_sidebar_mobile_toggle'
               >
-                <KTSVG path='/media/logos/nourish_logo.png' className=' svg-icon-1' />
+                <KTSVG path='/media/icons/duotune/abstract/abs015.svg' className=' svg-icon-1' />
               </div>
               <div className='d-flex align-items-center flex-grow-1 flex-lg-grow-0'>
                 <Link to='/dashboard' className='d-lg-none'>

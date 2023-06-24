@@ -285,9 +285,9 @@ const CreateTicket = (props: user_id) => {
                                         </div>
 
                                         <div className="dropzone">
-                                            <img src="http://100dayscss.com/codepen/upload.svg" className="upload-icon" />
-                                            <input type="file" onChange={postUpload} id="post" name="post" />
                                             <p className="my-5">Maximum file Size 25MB</p>
+                                            <img src="http://100dayscss.com/codepen/upload.svg" className="upload-icon my-5" />
+                                            <input type="file" onChange={postUpload} id="post" name="post" />
                                         </div>
 
                                         <button type="button" className="btn" name="uploadbutton">Upload file</button>
