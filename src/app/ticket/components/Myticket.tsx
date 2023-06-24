@@ -24,6 +24,8 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Tooltip from '@mui/material/Tooltip';
 import { useParams } from 'react-router-dom';
 import {
+    REACT_APP_GENIE_RESOLVE_API,
+    REACT_APP_GENIE_RESOLVE_VERSION,
     onChangeSortObj,
     sortObj,
 } from "../../common/globals/common.constants";
@@ -122,7 +124,7 @@ const Myticket = () => {
             return;
         }
 
-        const response = await fetch(`http://localhost:3500/v1/ticketroutes/all_my_ticket`, {
+        const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/all_my_ticket`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -183,7 +185,7 @@ const Myticket = () => {
     }
 
     const sortOnlyPriority = async (e: any) => {
-        const response = await fetch(`http://localhost:3500/v1/ticketroutes/all_category_ticket`, {
+        const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/all_category_ticket`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -200,7 +202,7 @@ const Myticket = () => {
         setAllTicket(json.all_category_ticket);
     }
     const sortPriority = async (page: number, limit: number) => {
-        const response = await fetch(`http://localhost:3500/v1/ticketroutes/all_category_ticket`, {
+        const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/all_category_ticket`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -238,7 +240,7 @@ const Myticket = () => {
     }
     const sortCategory = async (e: any) => {
         setSortcategory(e.target.value);
-        const response = await fetch(`http://localhost:3500/v1/ticketroutes/all_category_ticket`, {
+        const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/all_category_ticket`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -253,7 +255,7 @@ const Myticket = () => {
     }
     const sortStatus = async (e: any) => {
         setSortcategory(e.target.value);
-        const response = await fetch(`http://localhost:3500/v1/ticketroutes/all_status_ticket`, {
+        const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/all_status_ticket`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -283,7 +285,7 @@ const Myticket = () => {
         // e.preventDefault();
         let searchValue = svalue.search;
         const response = await fetch(
-            `http://localhost:3500/v1/ticketroutes/all_search_ticket`,
+            `${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/all_search_ticket`,
             {
                 method: "POST",
                 headers: {
@@ -323,7 +325,7 @@ const Myticket = () => {
 
     const updateCompletedPercent = async (ticket_id: string, next_completion: any) => {
         const response = await fetch(
-            `http://localhost:3500/v1/ticketroutes/update_completion`,
+            `${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/update_completion`,
             {
                 method: "POST",
                 headers: {
@@ -341,7 +343,7 @@ const Myticket = () => {
 
     const updateStatus = async (ticket_id: string, next_status: any) => {
         const response = await fetch(
-            `http://localhost:3500/v1/ticketroutes/update_status`,
+            `${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/update_status`,
             {
                 method: "POST",
                 headers: {
@@ -402,7 +404,7 @@ const Myticket = () => {
 
     const getAllUser = async () => {
 
-        const response = await fetch(`http://localhost:3500/v1/ticketroutes/get_user`, {
+        const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/get_user`, {
             method: 'Get'
         });
         const json = await response.json()
@@ -452,7 +454,7 @@ const Myticket = () => {
 
     const transfer_user = async () => {
         const response = await fetch(
-            `http://localhost:3500/v1/ticketroutes/transfer_ticket`,
+            `${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/transfer_ticket`,
             {
                 method: "POST",
                 headers: {
@@ -482,7 +484,7 @@ const Myticket = () => {
             new_add_user.push(selectedOptions[i].value);
         }
         const response = await fetch(
-            `http://localhost:3500/v1/ticketroutes/add_user`,
+            `${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/add_user`,
             {
                 method: "POST",
                 headers: {
@@ -508,7 +510,7 @@ const Myticket = () => {
     const [authUser, setAuthUser] = useState(true)
     const verify_user = async () => {
         const response = await fetch(
-            `http://localhost:3500/v1/auth/user/verify_user`,
+            `${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/auth/user/verify_user`,
             {
                 method: "POST",
                 headers: {

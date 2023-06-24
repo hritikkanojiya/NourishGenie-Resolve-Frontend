@@ -7,8 +7,9 @@ import { MenuTestPage } from '../pages/MenuTestPage'
 import { getCSSVariableValue } from '../../_metronic/assets/ts/_utils'
 import { WithChildren } from '../../_metronic/helpers'
 import BuilderPageWrapper from '../pages/layout-builder/BuilderPageWrapper'
-import Home from '../ticket/dashboard/Home';
+// import Home from '../ticket/dashboard/Home';
 import Myticket from '../ticket/components/Myticket'
+import Home from '../ticket/components/Home'
 // import CreateTicket from '../ticket/components/CreateTicket'
 
 const PrivateRoutes = () => {

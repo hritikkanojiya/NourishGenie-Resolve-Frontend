@@ -10,6 +10,10 @@ import axios from "axios";
 import { showToast } from "../../common/toastify/toastify.config";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
+import {
+    REACT_APP_GENIE_RESOLVE_API,
+    REACT_APP_GENIE_RESOLVE_VERSION
+} from "../../common/globals/common.constants";
 const FormData = require("form-data");
 
 const initialValues = {
@@ -86,7 +90,7 @@ const CreateTicket = (props: user_id) => {
                     }
                     formdata.append('myfile', myfile.attachFile, myfile.attachFile.name);
                     formdata.append('From', props.loginUserId);
-                    let url = 'http://localhost:3500/v1/ticketroutes/upload_file';
+                    let url = '${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/upload_file';
                     try {
                         response1 = await axios.post(url, formdata);
                     }
@@ -103,7 +107,7 @@ const CreateTicket = (props: user_id) => {
                 for (let i = 0; i < selectedOptions.length; i++) {
                     all_send_to.push(selectedOptions[i].value);
                 }
-                const response = await fetch(`http://localhost:3500/v1/ticketroutes/create_ticket`, {
+                const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/create_ticket`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -125,7 +129,7 @@ const CreateTicket = (props: user_id) => {
                     showToast("Ticket Created Successfully", "success");
                 }
                 else {
-                    showToast(`Ticket Creation Failed, ${json.error}`, "error");
+                    showToast(`Ticket Creation Failed, ${json.error.message}`, "error");
                 }
             } catch (error) {
                 console.error(error)
@@ -142,7 +146,7 @@ const CreateTicket = (props: user_id) => {
     const [category, setCategory] = useState([{ _id: "", name: "" }])
     const [status, setStatus] = useState([{ _id: "", name: "" }])
     const getAllPriority = async () => {
-        const response = await fetch(`http://localhost:3500/v1/ticketroutes/get_priority`, {
+        const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/get_priority`, {
             method: 'Get'
         });
         const json = await response.json()
@@ -155,7 +159,7 @@ const CreateTicket = (props: user_id) => {
 
     const getAllCategory = async () => {
 
-        const response = await fetch(`http://localhost:3500/v1/ticketroutes/get_category`, {
+        const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/get_category`, {
             method: 'Get'
         });
         const json = await response.json()
@@ -168,7 +172,7 @@ const CreateTicket = (props: user_id) => {
 
     const getAllStatus = async () => {
 
-        const response = await fetch(`http://localhost:3500/v1/ticketroutes/get_status`, {
+        const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/get_status`, {
             method: 'Get'
         });
         const json = await response.json()
@@ -181,7 +185,7 @@ const CreateTicket = (props: user_id) => {
 
     const getAllUser = async () => {
 
-        const response = await fetch(`http://localhost:3500/v1/ticketroutes/get_user`, {
+        const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/get_user`, {
             method: 'Get'
         });
         const json = await response.json()

@@ -1,4 +1,8 @@
 
+export const REACT_APP_GENIE_RESOLVE_API = `${process.env.REACT_APP_GENIE_RESOLVE_API}`;
+
+export const REACT_APP_GENIE_RESOLVE_VERSION = `${process.env.REACT_APP_GENIE_RESOLVE_VERSION}`;
+
 export type sortObj = { sortOn: string | null; sortBy: "asc" | "desc" | null };
 
 export const onChangeSortObj = (event: any, sortObj: sortObj) => {
