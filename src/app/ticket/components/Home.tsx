@@ -6,10 +6,15 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 // import Menu from '@material-ui/core/Menu';
 // import MenuItem from '@material-ui/core/MenuItem';
+import { makeStyles } from '@material-ui/core/styles';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
 import { RxCross2 } from 'react-icons/rx';
+import { FcHighPriority } from 'react-icons/fc';
+import { FcLowPriority } from 'react-icons/fc';
+import { FcMediumPriority } from 'react-icons/fc';
+import { AiFillCaretDown } from 'react-icons/ai';
 import Select from 'react-select';
 import CopyToClipboard from "react-copy-to-clipboard";
 import { PaginationComponent } from "../../common/components/pagination/PaginationComponent";
@@ -17,6 +22,7 @@ import { showToast } from "../../common/toastify/toastify.config";
 import { ToastContainer, toast } from "react-toastify";
 import { BiRefresh } from 'react-icons/bi';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import Input from '@mui/material/Input';
 import Tooltip from '@mui/material/Tooltip';
 import { useParams } from 'react-router-dom';
 import {
@@ -26,7 +32,29 @@ import {
     sortObj,
 } from "../../common/globals/common.constants";
 
+const useStyles = makeStyles(theme => ({
+    margin: {
+      margin: theme.spacing(1),
+    },
+    extendedIcon: {
+      marginRight: theme.spacing(1),
+    },
+  }));
+
+  const ariaLabel = { 
+    'aria-label': 'description',
+    // endAdornment: (
+    //     <InputAdornment>
+    //       <IconButton>
+    //         <SearchIcon />
+    //       </IconButton>
+    //     </InputAdornment>
+    //   )
+ };
+
 const Home = () => {
+
+    const classes = useStyles();
 
     const page = 1;
     const currentPage = 1;
@@ -436,6 +464,18 @@ const Home = () => {
         }
     }
 
+    const [showPriorityBar, setShowPriorityBar] = useState(false)
+    const show_priority_bar = () => {
+        if (showPriorityBar) {
+            setShowPriorityBar(false);
+        }
+        else {
+            // setAlreadyArrayAssingedUser(l);
+            setShowPriorityBar(true);
+            // setcurrentTicketId(ticket_id);
+        }
+    }
+
     useEffect(() => {
         verify_user();
         getAllUser();
@@ -686,12 +726,38 @@ const Home = () => {
                                             </div>
                                         </div>}
                                     </td>
-                                    <td className="text-center"><select style={{ width: "110px" }} className="form-select form-select-solid" onChange={(e) => updatePriority(ticket._id, e)} name="priority" defaultValue={'DEFAULT'} aria-label="Default select example">
+                                    <td style={{cursor: "pointer"}} className="text-center" onClick={show_priority_bar}>
+                                        {/* <select style={{ width: "110px" }} className="form-select form-select-solid" onChange={(e) => updatePriority(ticket._id, e)} name="priority" defaultValue={'DEFAULT'} aria-label="Default select example">
                                         <option value={ticket.priority}>{mappriority.get(ticket.priority)?.[0]}</option>
                                         {priority1?.map(_priority1 =>
                                             <option style={{ color: `${_priority1.color}` }} value={_priority1._id}> {_priority1.name} </option>
                                         )}
-                                    </select></td>
+                                    </select> */}
+                                    {mappriority.get(ticket.priority)?.[0]} <AiFillCaretDown style={{marginLeft: "50px"}}/>
+                                        {showPriorityBar && <div
+                                                className="menu menu-sub menu-sub-dropdown w-150px w-md-250px show"
+                                                style={{ zIndex: "105", position: "fixed", inset: "0px auto auto", margin: "0px", transform: "translate(-50%, 80px)" }}
+                                            >
+                                                {/* <div className="px-7 py-5">                                                    
+                                                </div> */}
+                                                <div className="separator border-gray-200"></div>
+                                                <div className="px-7 py-5">
+                                                <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4"><FcLowPriority /></div><div  className="col-md-4">Low</div></div>
+                                                <div className="row my-3" style={{cursor: "pointer"}}><div className="col-md-4"><FcMediumPriority /></div><div className="col-md-4">Medium</div></div>
+                                                <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4"><FcHighPriority /></div><div className="col-md-4">High</div></div>
+                                                {priority1?.map(_priority1 =>
+                                            // <option style={{ color: `${_priority1.color}` }} value={_priority1._id}> {_priority1.name} </option>
+                                                <>
+                                                {_priority1.name=="Low" && <div onClick={(e) => updatePriority(ticket._id, e)} className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4"><FcLowPriority /></div><div  className="col-md-4">Low</div></div>}
+                                                {_priority1.name=="Medium" && <div onClick={(e) => updatePriority(ticket._id, e)} className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4"><FcMediumPriority /></div><div  className="col-md-4">Medium</div></div>}
+                                                {_priority1.name=="High" && <div onClick={(e) => updatePriority(ticket._id, e)} className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4"><FcHighPriority /></div><div  className="col-md-4">High</div></div>}
+                                                </>
+                                        )}
+                                                    <div className="d-flex justify-content-end">
+                                                    </div>
+                                                </div>
+                                            </div>}
+                                    </td>
                                     <td className="text-center">
                                         <div className="row text-center" style={{ marginLeft: "5px" }}>
                                             <div className="col padding-0">

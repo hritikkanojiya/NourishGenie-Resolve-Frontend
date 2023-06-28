@@ -3,7 +3,10 @@ import clsx from "clsx";
 import TicketDetail from './TicketDetail';
 import AddUser from './AddUser';
 import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import { BsFillCircleFill } from 'react-icons/bs';
+import { AiFillCaretDown } from 'react-icons/ai';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from 'react-select';
@@ -13,6 +16,9 @@ import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
 import TransformIcon from '@mui/icons-material/Transform';
+import InputAdornment from "@material-ui/core/InputAdornment";
+import IconButton from "@material-ui/core/IconButton";
+import SearchIcon from '@mui/icons-material/Search';
 import { RxCross2 } from 'react-icons/rx';
 import { AiOutlineFilter } from 'react-icons/ai';
 import { BiRefresh } from 'react-icons/bi';
@@ -21,6 +27,7 @@ import { PaginationComponent } from "../../common/components/pagination/Paginati
 import { showToast } from "../../common/toastify/toastify.config";
 import { ToastContainer, toast } from "react-toastify";
 import ButtonGroup from '@mui/material/ButtonGroup';
+import Input from '@mui/material/Input';
 import Tooltip from '@mui/material/Tooltip';
 import { useParams } from 'react-router-dom';
 import {
@@ -30,6 +37,17 @@ import {
     sortObj,
 } from "../../common/globals/common.constants";
 
+const ariaLabel = { 
+    'aria-label': 'description',
+    // endAdornment: (
+    //     <InputAdornment>
+    //       <IconButton>
+    //         <SearchIcon />
+    //       </IconButton>
+    //     </InputAdornment>
+    //   )
+ };
+ 
 const StyledMenu: any = withStyles({
     paper: {
         border: '1px solid #d3d4d5',
@@ -62,7 +80,18 @@ const StyledMenuItem: any = withStyles(theme => ({
     },
 }))(MenuItem);
 
+const useStyles = makeStyles(theme => ({
+    margin: {
+      margin: theme.spacing(1),
+    },
+    extendedIcon: {
+      marginRight: theme.spacing(1),
+    },
+  }));
+
 const Myticket = () => {
+
+        const classes = useStyles();
 
     const page = 1;
     const currentPage = 1;
@@ -436,6 +465,17 @@ const Myticket = () => {
         }
     }
 
+    const [showStatusBar, setShowstatusBar] = useState(false)
+    const show_status_bar = () => {
+        if (showStatusBar) {
+            setShowstatusBar(false);
+        }
+        else {
+            // setAlreadyArrayAssingedUser(l);
+            setShowstatusBar(true);
+            // setcurrentTicketId(ticket_id);
+        }
+    }
     const show_transfer_user = (To: any, ticket_id: any) => {
         if (showTransferUser) {
             setShowTransferUser(false);
@@ -751,7 +791,7 @@ const Myticket = () => {
                                             }
                                         )}>Title</th>
                                     <th className="min-w-125px text-center text-black-50">Priority</th>
-                                    <th className="text-black-50">Stauts</th>
+                                    <th className="text-black-50 text-center">Stauts</th>
                                     <th className="text-black-50">Completed %</th>
                                     <th className="min-w-125px text-center text-black-50">Action</th>
                                 </tr>
@@ -778,13 +818,37 @@ const Myticket = () => {
                                         {/* <span className='badge my-4' style={{ fontSize: "12px", color: `${mappriority.get(ticket.priority)?.[1]}` }}>{mappriority.get(ticket.priority)?.[0]}</span> */}
                                     </td>
                                     <td className="text-center">
-                                        <select style={{ width: "120px" }} className="form-select form-select-solid" onChange={(e) => updateStatus(ticket._id, e)} name="status" defaultValue={'DEFAULT'} aria-label="Default select example">
+                                        {/* <select style={{ width: "120px" }} className="form-select form-select-solid" onChange={(e) => updateStatus(ticket._id, e)} name="status" defaultValue={'DEFAULT'} aria-label="Default select example">
                                             <option value="Default">{mapstatus.get(ticket.status)?.[0]}</option>
                                             {status1?.map(_status1 =>
                                                 <option style={{ color: `${_status1.color}` }} value={_status1._id}> {_status1.name}</option>
                                             )}
-                                            {/* ❍ */}
-                                        </select>
+                                        </select> */}
+                                        {/* <button onClick={show_status_bar} className="btn btn-success">Status</button> */}
+                                        <Button onClick={show_status_bar} style={{borderRadius: "50px"}} variant="contained" size="small" color="primary" className={classes.margin}>
+                                        {mapstatus.get(ticket.status)?.[0]} <AiFillCaretDown style={{marginLeft: "10px"}}/>
+                                            </Button>
+                                        {showStatusBar && <div
+                                                className="menu menu-sub menu-sub-dropdown w-250px w-md-300px show"
+                                                style={{ zIndex: "105", position: "fixed", inset: "0px auto auto", margin: "0px", transform: "translate(-50%, 80px)" }}
+                                            >
+                                                {/* <div className="px-7 py-5">                                                    
+                                                </div> */}
+                                                <div className="separator border-gray-200"></div>
+                                                <div className="px-7 py-5">
+                                                <Input style={{width: "100%"}} className="my-3" placeholder="Search" error inputProps={ariaLabel} />
+                                                <div className="row my-1" style={{cursor: "pointer"}}><div style={{color: "red"}} className="col-md-4"><BsFillCircleFill /></div><div  className="col-md-4">Open</div></div>
+                                                <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4">2.</div><div className="col-md-4">Progress</div></div>
+                                                <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4">3.</div><div className="col-md-4">In Hold</div></div>
+                                                <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4">4.</div><div className="col-md-4">Closed</div></div>
+                                                {status1?.map(_status1 =>
+                                                    // <option style={{ color: `${_status1.color}` }} value={_status1._id}> {_status1.name}</option>
+                                                    <div onClick={(e) => updateStatus(ticket._id, e)} className="row my-1" style={{cursor: "pointer"}}><div style={{color: `${_status1.color}`}} className="col-md-4"><BsFillCircleFill /></div><div  className="col-md-4">{_status1.name}</div></div>
+                                                )}
+                                                    <div className="d-flex justify-content-end">
+                                                    </div>
+                                                </div>
+                                            </div>}
                                     </td>
                                     <td className="text-center">
                                         <div className="row" style={{ width: "150px" }}>
