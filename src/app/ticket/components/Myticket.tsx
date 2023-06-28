@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef} from 'react'
 import clsx from "clsx";
 import TicketDetail from './TicketDetail';
 import AddUser from './AddUser';
@@ -370,7 +370,14 @@ const Myticket = () => {
         getAllTicket(paginationState.page, paginationState.itemsPerPage);
     }
 
-    const updateStatus = async (ticket_id: string, next_status: any) => {
+    const [currentStatusId, setCurrentStatusId] = useState("")
+    const valueRef = useRef("");
+    const set_current_status = (status_id: string) => {
+        setCurrentStatusId(status_id)
+        valueRef.current = status_id
+    }
+    const updateStatus = async () => {
+        console.log(valueRef.current, "currentStatusId");
         const response = await fetch(
             `${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/update_status`,
             {
@@ -379,12 +386,13 @@ const Myticket = () => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    ticket_id: ticket_id,
-                    next_status: next_status.target.value
+                    ticket_id: currentTicketId,
+                    next_status: valueRef.current
                 })
             }
         );
         const json = await response.json();
+        setShowstatusBar(false);
         getAllTicket(paginationState.page, paginationState.itemsPerPage);
     }
 
@@ -466,14 +474,14 @@ const Myticket = () => {
     }
 
     const [showStatusBar, setShowstatusBar] = useState(false)
-    const show_status_bar = () => {
+    const show_status_bar = (ticket_id: string) => {
         if (showStatusBar) {
             setShowstatusBar(false);
         }
         else {
             // setAlreadyArrayAssingedUser(l);
             setShowstatusBar(true);
-            // setcurrentTicketId(ticket_id);
+            setcurrentTicketId(ticket_id);
         }
     }
     const show_transfer_user = (To: any, ticket_id: any) => {
@@ -575,7 +583,8 @@ const Myticket = () => {
     }, [
         sortState.sortOn,
         sortState.sortBy,
-        svalue
+        svalue,
+        currentStatusId
     ])
     return (
         <>
@@ -825,25 +834,25 @@ const Myticket = () => {
                                             )}
                                         </select> */}
                                         {/* <button onClick={show_status_bar} className="btn btn-success">Status</button> */}
-                                        <Button onClick={show_status_bar} style={{borderRadius: "50px"}} variant="contained" size="small" color="primary" className={classes.margin}>
+                                        <Button onClick={()=>show_status_bar(ticket._id)} style={{borderRadius: "50px", backgroudColor: `${mapstatus.get(ticket.status)?.[1]}`}} variant="contained" size="small" className={classes.margin}>
                                         {mapstatus.get(ticket.status)?.[0]} <AiFillCaretDown style={{marginLeft: "10px"}}/>
                                             </Button>
                                         {showStatusBar && <div
                                                 className="menu menu-sub menu-sub-dropdown w-250px w-md-300px show"
-                                                style={{ zIndex: "105", position: "fixed", inset: "0px auto auto", margin: "0px", transform: "translate(-50%, 80px)" }}
+                                                style={{ zIndex: "105", position: "fixed", inset: "0px auto auto", margin: "0px", transform: "translate(40%, 170%)" }}
                                             >
                                                 {/* <div className="px-7 py-5">                                                    
                                                 </div> */}
                                                 <div className="separator border-gray-200"></div>
                                                 <div className="px-7 py-5">
                                                 <Input style={{width: "100%"}} className="my-3" placeholder="Search" error inputProps={ariaLabel} />
-                                                <div className="row my-1" style={{cursor: "pointer"}}><div style={{color: "red"}} className="col-md-4"><BsFillCircleFill /></div><div  className="col-md-4">Open</div></div>
+                                                {/* <div className="row my-1" style={{cursor: "pointer"}}><div style={{color: "red"}} className="col-md-4"><BsFillCircleFill /></div><div  className="col-md-4">Open</div></div>
                                                 <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4">2.</div><div className="col-md-4">Progress</div></div>
                                                 <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4">3.</div><div className="col-md-4">In Hold</div></div>
-                                                <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4">4.</div><div className="col-md-4">Closed</div></div>
+                                                <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4">4.</div><div className="col-md-4">Closed</div></div> */}
                                                 {status1?.map(_status1 =>
                                                     // <option style={{ color: `${_status1.color}` }} value={_status1._id}> {_status1.name}</option>
-                                                    <div onClick={(e) => updateStatus(ticket._id, e)} className="row my-1" style={{cursor: "pointer"}}><div style={{color: `${_status1.color}`}} className="col-md-4"><BsFillCircleFill /></div><div  className="col-md-4">{_status1.name}</div></div>
+                                                    <div onClick={() => {set_current_status(_status1._id);updateStatus()}} className="row my-1" style={{cursor: "pointer"}}><div style={{color: `${_status1.color}`}} className="col-md-4"><BsFillCircleFill /></div><div  className="col-md-4">{_status1.name}</div></div>
                                                 )}
                                                     <div className="d-flex justify-content-end">
                                                     </div>

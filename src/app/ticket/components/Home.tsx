@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import clsx from "clsx";
 import CreateTicket from './CreateTicket';
 import SendRemainder from '../components/SendRemainder';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-// import Menu from '@material-ui/core/Menu';
-// import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
@@ -34,14 +32,14 @@ import {
 
 const useStyles = makeStyles(theme => ({
     margin: {
-      margin: theme.spacing(1),
+        margin: theme.spacing(1),
     },
     extendedIcon: {
-      marginRight: theme.spacing(1),
+        marginRight: theme.spacing(1),
     },
-  }));
+}));
 
-  const ariaLabel = { 
+const ariaLabel = {
     'aria-label': 'description',
     // endAdornment: (
     //     <InputAdornment>
@@ -50,7 +48,7 @@ const useStyles = makeStyles(theme => ({
     //       </IconButton>
     //     </InputAdornment>
     //   )
- };
+};
 
 const Home = () => {
 
@@ -293,10 +291,17 @@ const Home = () => {
                 showingTill: showingTill,
             };
         });
-        setAllTicket(json.all_search_ticket);
+        setAllTicket(json.all_search_ticket)
     }
 
-    const updatePriority = async (ticket_id: string, next_priority: any) => {
+    const [currentPriorityId, setCurrentPriorityId] = useState("")
+    const valueRef = useRef("");
+    const set_current_status = (priority_id: string) => {
+        setCurrentPriorityId(priority_id)
+        valueRef.current = priority_id
+    }
+    const updatePriority = async () => {
+        console.log(valueRef.current, "currentPriorityId");
         const response = await fetch(
             `${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/update_priority`,
             {
@@ -305,12 +310,14 @@ const Home = () => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    ticket_id: ticket_id,
-                    next_priority: next_priority.target.value
+                    ticket_id: currentTicketId,
+                    next_priority: valueRef.current
                 })
             }
         );
         const json = await response.json();
+        setShowPriorityBar(false);
+        getAllTicket(paginationState.page, paginationState.itemsPerPage);
     }
 
     const updateCompletedPercent = async (ticket_id: string, next_completion: any) => {
@@ -465,14 +472,14 @@ const Home = () => {
     }
 
     const [showPriorityBar, setShowPriorityBar] = useState(false)
-    const show_priority_bar = () => {
+    const show_priority_bar = (ticket_id: string) => {
         if (showPriorityBar) {
             setShowPriorityBar(false);
         }
         else {
             // setAlreadyArrayAssingedUser(l);
             setShowPriorityBar(true);
-            // setcurrentTicketId(ticket_id);
+            setcurrentTicketId(ticket_id);
         }
     }
 
@@ -726,37 +733,41 @@ const Home = () => {
                                             </div>
                                         </div>}
                                     </td>
-                                    <td style={{cursor: "pointer"}} className="text-center" onClick={show_priority_bar}>
+                                    <td style={{ cursor: "pointer" }} className="text-center" onClick={() => show_priority_bar(ticket._id)}>
                                         {/* <select style={{ width: "110px" }} className="form-select form-select-solid" onChange={(e) => updatePriority(ticket._id, e)} name="priority" defaultValue={'DEFAULT'} aria-label="Default select example">
                                         <option value={ticket.priority}>{mappriority.get(ticket.priority)?.[0]}</option>
                                         {priority1?.map(_priority1 =>
                                             <option style={{ color: `${_priority1.color}` }} value={_priority1._id}> {_priority1.name} </option>
                                         )}
                                     </select> */}
-                                    {mappriority.get(ticket.priority)?.[0]} <AiFillCaretDown style={{marginLeft: "50px"}}/>
+                                        {mappriority.get(ticket.priority)?.[0] == "Low" && <FcLowPriority style={{ marginRight: "10px" }} />}
+                                        {mappriority.get(ticket.priority)?.[0] == "Medium" && <FcMediumPriority style={{ marginRight: "10px" }} />}
+                                        {mappriority.get(ticket.priority)?.[0] == "High" && <FcHighPriority style={{ marginRight: "10px" }} />}{mappriority.get(ticket.priority)?.[0]} <AiFillCaretDown style={{ marginLeft: "50px" }} />
                                         {showPriorityBar && <div
-                                                className="menu menu-sub menu-sub-dropdown w-150px w-md-250px show"
-                                                style={{ zIndex: "105", position: "fixed", inset: "0px auto auto", margin: "0px", transform: "translate(-50%, 80px)" }}
-                                            >
-                                                {/* <div className="px-7 py-5">                                                    
+                                            className="menu menu-sub menu-sub-dropdown w-150px w-md-150px show"
+                                            style={{ zIndex: "105", position: "fixed", inset: "0px auto auto", margin: "0px", transform: "translate(-100%, 180%)" }}
+                                        >
+                                            {/* <div className="px-7 py-5">                                                    
                                                 </div> */}
-                                                <div className="separator border-gray-200"></div>
-                                                <div className="px-7 py-5">
-                                                <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4"><FcLowPriority /></div><div  className="col-md-4">Low</div></div>
+                                            <div className="py-5">
+                                                {/* <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4"><FcLowPriority /></div><div  className="col-md-4">Low</div></div>
                                                 <div className="row my-3" style={{cursor: "pointer"}}><div className="col-md-4"><FcMediumPriority /></div><div className="col-md-4">Medium</div></div>
-                                                <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4"><FcHighPriority /></div><div className="col-md-4">High</div></div>
+                                                <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4"><FcHighPriority /></div><div className="col-md-4">High</div></div> */}
                                                 {priority1?.map(_priority1 =>
-                                            // <option style={{ color: `${_priority1.color}` }} value={_priority1._id}> {_priority1.name} </option>
-                                                <>
-                                                {_priority1.name=="Low" && <div onClick={(e) => updatePriority(ticket._id, e)} className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4"><FcLowPriority /></div><div  className="col-md-4">Low</div></div>}
-                                                {_priority1.name=="Medium" && <div onClick={(e) => updatePriority(ticket._id, e)} className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4"><FcMediumPriority /></div><div  className="col-md-4">Medium</div></div>}
-                                                {_priority1.name=="High" && <div onClick={(e) => updatePriority(ticket._id, e)} className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4"><FcHighPriority /></div><div  className="col-md-4">High</div></div>}
-                                                </>
-                                        )}
-                                                    <div className="d-flex justify-content-end">
-                                                    </div>
-                                                </div>
-                                            </div>}
+                                                    <>
+                                                        <div
+                                                        // className="low"
+                                                        // onMouseEnter={(event: any) => event.target.style = {color: 'red', fontSize: '50px'}}
+                                                        // onMouseLeave={(event: any) => event.target.style = {color: 'black'}}
+                                                            onClick={() => { set_current_status(_priority1._id); updatePriority() }} style={{ cursor: "pointer" }}>
+                                                            {_priority1.name == "Low" && <div><FcLowPriority style={{marginRight: "15px"}} /> Low </div>}
+                                                            {_priority1.name == "Medium" && <div className="my-3"><FcMediumPriority style={{marginRight: "15px"}} /> Medium</div>}
+                                                            {_priority1.name == "High" && <div><FcHighPriority style={{marginRight: "15px"}} /> High</div>}
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>}
                                     </td>
                                     <td className="text-center">
                                         <div className="row text-center" style={{ marginLeft: "5px" }}>
