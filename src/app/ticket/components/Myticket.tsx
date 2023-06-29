@@ -8,6 +8,9 @@ import Button from '@material-ui/core/Button';
 import { BsFillCircleFill } from 'react-icons/bs';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { AiFillCaretDown } from 'react-icons/ai';
+import { FcHighPriority } from 'react-icons/fc';
+import { FcLowPriority } from 'react-icons/fc';
+import { FcMediumPriority } from 'react-icons/fc';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from 'react-select';
@@ -842,9 +845,13 @@ const Myticket = () => {
                                     </td>
                                     <td className="text-center"><p style={{ fontSize: "1rem" }} className="my-4">{ticket.subject}</p></td>
                                     <td className="text-center">
-                                        <span style={{ color: `${mappriority.get(ticket.priority)?.[1]}` }} className="badge badge-sm badge-square badge-light-primary my-4">
+                                        {/* <span style={{ color: `${mappriority.get(ticket.priority)?.[1]}` }} className="badge badge-sm badge-square badge-light-primary my-4">
                                             {mappriority.get(ticket.priority)?.[0]}
-                                        </span>
+                                        </span> */}
+                                        <div style={{ cursor: "pointer" }} className="text-center">                                       
+                                        {mappriority.get(ticket.priority)?.[0] == "Low" && <FcLowPriority style={{ marginRight: "10px", fontSize: "16px" }} />}
+                                        {mappriority.get(ticket.priority)?.[0] == "Medium" && <FcMediumPriority style={{ marginRight: "10px", fontSize: "16px" }} />}
+                                        {mappriority.get(ticket.priority)?.[0] == "High" && <FcHighPriority style={{ marginRight: "10px", fontSize: "16px" }} />}{mappriority.get(ticket.priority)?.[0]} </div>
                                     </td>
                                     <td className="text-center">
                                         {/* <button onClick={show_status_bar} className="btn btn-success">Status</button> */}

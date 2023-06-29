@@ -686,7 +686,7 @@ const Home = () => {
                                     </select> */}
                                         {mappriority.get(ticket.priority)?.[0] == "Low" && <FcLowPriority style={{ marginRight: "10px", fontSize: "16px" }} />}
                                         {mappriority.get(ticket.priority)?.[0] == "Medium" && <FcMediumPriority style={{ marginRight: "10px", fontSize: "16px" }} />}
-                                        {mappriority.get(ticket.priority)?.[0] == "High" && <FcHighPriority style={{ marginRight: "10px", fontSize: "16px" }} />}{mappriority.get(ticket.priority)?.[0]} <AiFillCaretDown style={{ marginLeft: "50px" }} />
+                                        {mappriority.get(ticket.priority)?.[0] == "High" && <FcHighPriority style={{ marginRight: "10px", fontSize: "16px" }} />}{mappriority.get(ticket.priority)?.[0]} {mappriority.get(ticket.priority)?.[0] == "Medium" ? <AiFillCaretDown style={{ marginLeft: "26px" }}  /> : <AiFillCaretDown style={{ marginLeft: "50px" }}  />}
                                         {showPriorityBar && <div
                                             className="menu menu-sub menu-sub-dropdown w-150px w-md-150px show"
                                             style={{ zIndex: "105", position: "fixed", inset: "0px auto auto", margin: "0px", transform: "translate(-110%, 250%)" }}
