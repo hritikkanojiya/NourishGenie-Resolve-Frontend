@@ -740,19 +740,14 @@ const Home = () => {
                                             <option style={{ color: `${_priority1.color}` }} value={_priority1._id}> {_priority1.name} </option>
                                         )}
                                     </select> */}
-                                        {mappriority.get(ticket.priority)?.[0] == "Low" && <FcLowPriority style={{ marginRight: "10px" }} />}
-                                        {mappriority.get(ticket.priority)?.[0] == "Medium" && <FcMediumPriority style={{ marginRight: "10px" }} />}
-                                        {mappriority.get(ticket.priority)?.[0] == "High" && <FcHighPriority style={{ marginRight: "10px" }} />}{mappriority.get(ticket.priority)?.[0]} <AiFillCaretDown style={{ marginLeft: "50px" }} />
+                                        {mappriority.get(ticket.priority)?.[0] == "Low" && <FcLowPriority style={{ marginRight: "10px", fontSize: "16px" }} />}
+                                        {mappriority.get(ticket.priority)?.[0] == "Medium" && <FcMediumPriority style={{ marginRight: "10px", fontSize: "16px" }} />}
+                                        {mappriority.get(ticket.priority)?.[0] == "High" && <FcHighPriority style={{ marginRight: "10px", fontSize: "16px" }} />}{mappriority.get(ticket.priority)?.[0]} <AiFillCaretDown style={{ marginLeft: "50px" }} />
                                         {showPriorityBar && <div
                                             className="menu menu-sub menu-sub-dropdown w-150px w-md-150px show"
-                                            style={{ zIndex: "105", position: "fixed", inset: "0px auto auto", margin: "0px", transform: "translate(-100%, 180%)" }}
+                                            style={{ zIndex: "105", position: "fixed", inset: "0px auto auto", margin: "0px", transform: "translate(-110%, 250%)" }}
                                         >
-                                            {/* <div className="px-7 py-5">                                                    
-                                                </div> */}
                                             <div className="py-5">
-                                                {/* <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4"><FcLowPriority /></div><div  className="col-md-4">Low</div></div>
-                                                <div className="row my-3" style={{cursor: "pointer"}}><div className="col-md-4"><FcMediumPriority /></div><div className="col-md-4">Medium</div></div>
-                                                <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4"><FcHighPriority /></div><div className="col-md-4">High</div></div> */}
                                                 {priority1?.map(_priority1 =>
                                                     <>
                                                         <div
@@ -760,9 +755,9 @@ const Home = () => {
                                                         // onMouseEnter={(event: any) => event.target.style = {color: 'red', fontSize: '50px'}}
                                                         // onMouseLeave={(event: any) => event.target.style = {color: 'black'}}
                                                             onClick={() => { set_current_status(_priority1._id); updatePriority() }} style={{ cursor: "pointer" }}>
-                                                            {_priority1.name == "Low" && <div><FcLowPriority style={{marginRight: "15px"}} /> Low </div>}
-                                                            {_priority1.name == "Medium" && <div className="my-3"><FcMediumPriority style={{marginRight: "15px"}} /> Medium</div>}
-                                                            {_priority1.name == "High" && <div><FcHighPriority style={{marginRight: "15px"}} /> High</div>}
+                                                            {_priority1.name == "Low" && <Tooltip title="Change to low priority"><div><FcLowPriority style={{marginRight: "15px"}} /> Low </div></Tooltip>}
+                                                            {_priority1.name == "Medium" && <Tooltip title="Change to medium priority"><div className="my-3"><FcMediumPriority style={{marginRight: "15px"}} /> Medium</div></Tooltip>}
+                                                            {_priority1.name == "High" && <Tooltip title="Change to high priority"><div><FcHighPriority style={{marginRight: "15px"}} /> High</div></Tooltip>}
                                                         </div>
                                                     </>
                                                 )}
@@ -787,7 +782,7 @@ const Home = () => {
                                                 </div>
                                             </div>
                                             <div className="col padding-0">
-                                                <select style={{ height: "7px", width: "6px" }} className="form-select my-4" onChange={(e) => updateCompletedPercent(ticket._id, e)} name="sendto" defaultValue={'DEFAULT'} aria-label="Default select example">
+                                                <select style={{ height: "7px", width: "6px" }} className="form-select border-gray-100 my-4" onChange={(e) => updateCompletedPercent(ticket._id, e)} name="sendto" defaultValue={'DEFAULT'} aria-label="Default select example">
                                                     {/* <option value="Default">{ticket.complete}</option> */}
                                                     <option value="0">0%</option>
                                                     <option value="25">25%</option>

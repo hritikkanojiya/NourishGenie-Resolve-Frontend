@@ -83,3 +83,13 @@ h1 {
     background: rebeccapurple;
     box-shadow: 0 3px 0 0 deeppink;
 }
+
+.hover-button {
+    background-color: blue;
+    color: white;
+  }
+  
+  .hover-button:hover {
+    background-color: red;
+    color: black;
+  }

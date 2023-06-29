@@ -6,6 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { BsFillCircleFill } from 'react-icons/bs';
+import { AiOutlineSearch } from 'react-icons/ai';
 import { AiFillCaretDown } from 'react-icons/ai';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -140,6 +141,7 @@ const Myticket = () => {
     const [category1, setCategory1] = useState([{ _id: "", name: "" }]);
     const [allreadyusermap, setAllreadyusermap] = useState(new Map());
     const [status1, setStatus1] = useState([{ _id: "", name: "", color: "" }]);
+    const [status2, setStatus2] = useState([{ _id: "", name: "", color: "" }]);
     const [svalue, setSvalue] = useState("");
     const [allticket, setAllTicket] = useState([{ _id: "", subject: "", content: "", To: [], priority: "", category: "", status: "", complete: 0, attachements: [] }])
     const getAllTicket = async (page: number, limit: number, opt = 0) => {
@@ -190,6 +192,7 @@ const Myticket = () => {
         setPriority1(ticket_priority1);
         setCategory1(ticket_category1);
         setStatus1(ticket_status1);
+        setStatus2(ticket_status1);
         let totalRecords = json.all_ticket.length;
         setState((previousState: any) => {
             return {
@@ -472,8 +475,17 @@ const Myticket = () => {
             setcurrentTicketId(ticket_id);
         }
     }
-
     const [showStatusBar, setShowstatusBar] = useState(false)
+    const [showDown, setShowDown] = useState(false)
+    const show_down = () => {
+        if(showDown)
+        {
+            setShowDown(false);
+        }
+        else{
+            setShowDown(true);
+        }
+    }
     const show_status_bar = (ticket_id: string) => {
         if (showStatusBar) {
             setShowstatusBar(false);
@@ -574,6 +586,17 @@ const Myticket = () => {
             showToast(json.error.message, "error");
             setAuthUser(false);
         }
+    }
+
+    const searchStatus = (e: any) => {
+        let str = e.target.value;
+        console.log(e.target.value, "e");
+        let str1: string = str.charAt(0).toUpperCase() + str.slice(1);
+        let filteredData = [{ _id: "", name: "", color: "" }]
+        filteredData = status1.filter((item: any) =>
+        item.name.includes(str1)
+        );
+        setStatus2(filteredData);
     }
 
     useEffect(() => {
@@ -824,35 +847,24 @@ const Myticket = () => {
                                         <span style={{ color: `${mappriority.get(ticket.priority)?.[1]}` }} className="badge badge-sm badge-square badge-light-primary my-4">
                                             {mappriority.get(ticket.priority)?.[0]}
                                         </span>
-                                        {/* <span className='badge my-4' style={{ fontSize: "12px", color: `${mappriority.get(ticket.priority)?.[1]}` }}>{mappriority.get(ticket.priority)?.[0]}</span> */}
                                     </td>
                                     <td className="text-center">
-                                        {/* <select style={{ width: "120px" }} className="form-select form-select-solid" onChange={(e) => updateStatus(ticket._id, e)} name="status" defaultValue={'DEFAULT'} aria-label="Default select example">
-                                            <option value="Default">{mapstatus.get(ticket.status)?.[0]}</option>
-                                            {status1?.map(_status1 =>
-                                                <option style={{ color: `${_status1.color}` }} value={_status1._id}> {_status1.name}</option>
-                                            )}
-                                        </select> */}
                                         {/* <button onClick={show_status_bar} className="btn btn-success">Status</button> */}
-                                        <Button onClick={()=>show_status_bar(ticket._id)} style={{borderRadius: "50px", backgroudColor: `${mapstatus.get(ticket.status)?.[1]}`}} variant="contained" size="small" className={classes.margin}>
+                                        <Button
+                                            // onMouseEnter={show_down}
+                                            // onMouseLeave={show_down}
+                                            onClick={()=>show_status_bar(ticket._id)} style={{borderRadius: "50px", color: "white", backgroundColor: `${mapstatus.get(ticket.status)?.[1]}`}} variant="contained" size="small" className={classes.margin}>
                                         {mapstatus.get(ticket.status)?.[0]} <AiFillCaretDown style={{marginLeft: "10px"}}/>
                                             </Button>
                                         {showStatusBar && <div
                                                 className="menu menu-sub menu-sub-dropdown w-250px w-md-300px show"
                                                 style={{ zIndex: "105", position: "fixed", inset: "0px auto auto", margin: "0px", transform: "translate(40%, 170%)" }}
                                             >
-                                                {/* <div className="px-7 py-5">                                                    
-                                                </div> */}
                                                 <div className="separator border-gray-200"></div>
                                                 <div className="px-7 py-5">
-                                                <Input style={{width: "100%"}} className="my-3" placeholder="Search" error inputProps={ariaLabel} />
-                                                {/* <div className="row my-1" style={{cursor: "pointer"}}><div style={{color: "red"}} className="col-md-4"><BsFillCircleFill /></div><div  className="col-md-4">Open</div></div>
-                                                <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4">2.</div><div className="col-md-4">Progress</div></div>
-                                                <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4">3.</div><div className="col-md-4">In Hold</div></div>
-                                                <div className="row my-1" style={{cursor: "pointer"}}><div className="col-md-4">4.</div><div className="col-md-4">Closed</div></div> */}
-                                                {status1?.map(_status1 =>
-                                                    // <option style={{ color: `${_status1.color}` }} value={_status1._id}> {_status1.name}</option>
-                                                    <div onClick={() => {set_current_status(_status1._id);updateStatus()}} className="row my-1" style={{cursor: "pointer"}}><div style={{color: `${_status1.color}`}} className="col-md-4"><BsFillCircleFill /></div><div  className="col-md-4">{_status1.name}</div></div>
+                                                <Input style={{width: "100%"}} onChange={searchStatus} className="my-3" name="searchstatus" placeholder="Search" error inputProps={ariaLabel} />
+                                                {status2?.map(_status1 =>
+                                                    <div onClick={() => {set_current_status(_status1._id);updateStatus()}} className="row my-1" style={{cursor: "pointer"}}><div style={{color: `${_status1.color}`}} className="col-md-4"><BsFillCircleFill /></div><Tooltip title={`Change to ${_status1.name}`}><div className="col-md-4">{_status1.name}</div></Tooltip></div>
                                                 )}
                                                     <div className="d-flex justify-content-end">
                                                     </div>
@@ -877,7 +889,7 @@ const Myticket = () => {
                                                 </div>
                                             </div>
                                             <div className="col padding-0">
-                                                <select style={{ height: "7px", width: "6px" }} className="form-select my-4" onChange={(e) => updateCompletedPercent(ticket._id, e)} name="sendto" defaultValue={'DEFAULT'} aria-label="Default select example">
+                                                <select style={{ height: "7px", width: "6px", cursor: "pointer" }} className="form-select border-gray-100 my-4" onChange={(e) => updateCompletedPercent(ticket._id, e)} name="sendto" defaultValue={'DEFAULT'} aria-label="Default select example">
                                                     {/* <option value="Default">{ticket.complete}</option> */}
                                                     <option value="0">0%</option>
                                                     <option value="25">25%</option>
