@@ -380,7 +380,6 @@ const Myticket = () => {
         valueRef.current = status_id
     }
     const updateStatus = async () => {
-        console.log(valueRef.current, "currentStatusId");
         const response = await fetch(
             `${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/update_status`,
             {
@@ -590,7 +589,6 @@ const Myticket = () => {
 
     const searchStatus = (e: any) => {
         let str = e.target.value;
-        console.log(e.target.value, "e");
         let str1: string = str.charAt(0).toUpperCase() + str.slice(1);
         let filteredData = [{ _id: "", name: "", color: "" }]
         filteredData = status1.filter((item: any) =>

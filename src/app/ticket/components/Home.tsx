@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react'
 import clsx from "clsx";
 import CreateTicket from './CreateTicket';
 import SendRemainder from '../components/SendRemainder';
-import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -41,12 +40,6 @@ const useStyles = makeStyles(theme => ({
 
 const ariaLabel = {
     'aria-label': 'description',
-    // endAdornment: (
-    //     <InputAdornment>
-    //       <IconButton>
-    //         <SearchIcon />
-    //       </IconButton>
-    //     </InputAdornment>
     //   )
 };
 
@@ -213,36 +206,6 @@ const Home = () => {
         });
         setAllTicket(json.all_category_ticket);
     }
-    // const sortCategory = async (e: any) => {
-    //     setSortcategory(e.target.value);
-    //     const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/all_category_ticket`, {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({
-    //             From: userId,
-    //             category: e.target.value
-    //         })
-    //     });
-    //     const json = await response.json()
-    //     setAllTicket(json.all_category_ticket);
-    // }
-    // const sortStatus = async (e: any) => {
-    //     setSortcategory(e.target.value);
-    //     const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/all_status_ticket`, {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({
-    //             From: userId,
-    //             status: e.target.value
-    //         })
-    //     });
-    //     const json = await response.json()
-    //     setAllTicket(json.all_category_ticket);
-    // }
 
     const sort_Priority = (e: any) => {
         setSortpriority(e.target.value);
@@ -301,7 +264,6 @@ const Home = () => {
         valueRef.current = priority_id
     }
     const updatePriority = async () => {
-        console.log(valueRef.current, "currentPriorityId");
         const response = await fetch(
             `${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/update_priority`,
             {
@@ -351,24 +313,6 @@ const Home = () => {
     const [showAddUser, setShowAddUser] = useState(false)
     const [showAssigned, setShowAssigned] = useState(false)
     const [alreadyArrayAssingedUser, setAlreadyArrayAssingedUser] = useState([{ value: "", label: "" }]);
-    // const show_assigned = (To: any) => {
-    //     if (showAssigned) {
-    //         setShowAssigned(false);
-    //     }
-    //     else {
-    //         let l = [{ value: "", label: "" }];
-    //         for (let i = 0; i < To.length; i++) {
-    //             l.push(allreadyusermap.get(To[i]))
-    //         }
-    //         l.shift();
-    //         setAlreadyArrayAssingedUser(l);
-    //         setShowAssigned(true);
-    //     }
-    // }
-
-    // const show_assigned_value = () => {
-
-    // }
 
     const show_added_user = (To: any, ticket_id: any) => {
         if (showAddUser) {
