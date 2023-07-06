@@ -1,6 +1,11 @@
 
 import React, { useEffect, useState } from 'react'
 import { RxCross2 } from 'react-icons/rx';
+import {Dropdown, Spinner} from 'react-bootstrap'
+import {
+    REACT_APP_GENIE_RESOLVE_API,
+    REACT_APP_GENIE_RESOLVE_VERSION,
+} from "../../common/globals/common.constants";
 const FormData = require("form-data");
 
 interface ticket_detail {
@@ -14,9 +19,10 @@ interface ticket_detail {
 const TicketDetail = (props: { _ticketdetail: ticket_detail }) => {
 
     const [show_file, setShow_file] = useState(false);
+    const [isLoading, setIsLoading] = React.useState(false)
     const getfilename = async () => {
-
-        const response = await fetch(`http://localhost:3500/v1/ticketroutes/get_file_name`, {
+        setIsLoading(true);
+        const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/get_file_name`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -27,6 +33,7 @@ const TicketDetail = (props: { _ticketdetail: ticket_detail }) => {
         });
         const json = await response.json();
         props._ticketdetail.attachements = json.file_name_array;
+        setIsLoading(false);
         setShow_file(true);
     }
 
@@ -37,37 +44,7 @@ const TicketDetail = (props: { _ticketdetail: ticket_detail }) => {
     useEffect(() => {
         // viewTicketDetail();
     }, [])
-    return (
-        // <div className="modal fade" tabIndex={-1} id="kt_modal_4">
-        //     <div className="modal-dialog">
-        //         <div className="modal-content">
-        //             <div className="modal-header">
-        //                 <h5 className="modal-title">Ticket Detail</h5>
-        //                 <div
-        //                     className="btn btn-icon btn-sm btn-active-light-primary ms-2"
-        //                     data-bs-dismiss="modal"
-        //                     aria-label="Close"
-        //                 >
-        //                 </div>
-        //             </div>
-        //             <div className="modal-body">
-        //                 <p>All Ticket Detail.</p>
-        //             </div>
-        //             <div className="modal-footer">
-        //                 <button
-        //                     type="button"
-        //                     className="btn btn-danger"
-        //                     data-bs-dismiss="modal"
-        //                 >
-        //                     Close
-        //                 </button>
-        //                 {/* <button type="button" className="btn btn-primary">
-        //                     Save changes
-        //                 </button> */}
-        //             </div>
-        //         </div>
-        //     </div>
-        // </div>
+    return (        
         <div className="modal fade my-5" tabIndex={-1} id="kt_modal_4">
             <div className="modal-dialog">
                 <div className="modal-content" style={{ width: "750px" }}>
@@ -99,7 +76,7 @@ const TicketDetail = (props: { _ticketdetail: ticket_detail }) => {
                                             <label className='col-lg-4 fw-bold text-muted'>Content</label>
 
                                             <div className='col-lg-8 fv-row'>
-                                                <span className='fw-bold fs-6'>{props._ticketdetail.content}</span>
+                                                <span className='fw-bold fs-6'>{props._ticketdetail.content.length!==0 ? props._ticketdetail.content : <>Content is not available</>}</span>
                                             </div>
                                         </div>
 
@@ -142,10 +119,16 @@ const TicketDetail = (props: { _ticketdetail: ticket_detail }) => {
                                                 </button>
                                             </div>
                                         </div>
+                                        {isLoading ?
+                                            (<div className='d-flex align-items-center justify-content-center loader-container'>
+                                            <Spinner animation='border' variant='primary' />
+                                            </div>)
+                                         : 
+                                        (<>
                                         {show_file && <span className='fw-bolder fs-6 text-dark my-5'>{props._ticketdetail.attachements?.map((file, index) =>
-                                            <p>{index + 1}- [{file}] </p>
+                                            <p>{index + 1}- [{file.slice(14)}] </p>
                                         )}</span>}
-                                        {!props._ticketdetail.attachements && <span className='fw-bolder fs-6 text-dark my-5'>No File Present</span>}
+                                        {!props._ticketdetail.attachements && <span className='fw-bolder fs-6 text-dark my-5'>No File Present</span>}</>)}
                                     </div>
                                     {/* ------------- */}
                                 </div>

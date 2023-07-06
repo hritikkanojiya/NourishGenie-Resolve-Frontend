@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useRef} from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import clsx from "clsx";
 import TicketDetail from './TicketDetail';
-import AddUser from './AddUser';
 import { withStyles } from '@material-ui/core/styles';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -41,72 +40,42 @@ import {
     sortObj,
 } from "../../common/globals/common.constants";
 
-const ariaLabel = { 
+const ariaLabel = {
     'aria-label': 'description',
-    // endAdornment: (
-    //     <InputAdornment>
-    //       <IconButton>
-    //         <SearchIcon />
-    //       </IconButton>
-    //     </InputAdornment>
-    //   )
- };
- 
-const StyledMenu: any = withStyles({
-    paper: {
-        border: '1px solid #d3d4d5',
-    },
-})(props => (
-    <Menu
-        elevation={0}
-        getContentAnchorEl={null}
-        open={false}
-        anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-        }}
-        transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-        }}
-        {...props}
-    />
-));
-
-const StyledMenuItem: any = withStyles(theme => ({
-    root: {
-        '&:focus': {
-            backgroundColor: theme.palette.primary.main,
-            '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
-                color: theme.palette.common.white,
-            },
-        },
-    },
-}))(MenuItem);
+};
 
 const useStyles = makeStyles(theme => ({
     margin: {
-      margin: theme.spacing(1),
+        margin: theme.spacing(1),
     },
     extendedIcon: {
-      marginRight: theme.spacing(1),
+        marginRight: theme.spacing(1),
     },
-  }));
+}));
+
+interface prev_state {
+        appAgents: number,
+        agentsCount: number
+}
+
+interface pagination_prev_state {
+    itemsPerPage: number,
+    showingFrom: number,
+    showingTill: number,
+    page: number,
+}
 
 const Myticket = () => {
 
-        const classes = useStyles();
+    const classes = useStyles();
 
     const page = 1;
     const currentPage = 1;
-    const [state, setState] = useState<{
-        appAgents: string;
-        agentsCount: number;
-    }>({
-        appAgents: '',
+    const [state, setState] = useState<prev_state>({
+        appAgents: 0,
         agentsCount: 0,
     });
-    const [paginationState, setPaginationState] = useState({
+    const [paginationState, setPaginationState] = useState<pagination_prev_state>({
         itemsPerPage: 10,
         showingFrom: 1,
         showingTill: 10,
@@ -197,7 +166,7 @@ const Myticket = () => {
         setStatus1(ticket_status1);
         setStatus2(ticket_status1);
         let totalRecords = json.all_ticket.length;
-        setState((previousState: any) => {
+        setState((previousState: prev_state) => {
             return {
                 ...previousState,
                 appAgents: showingFrom,
@@ -205,11 +174,11 @@ const Myticket = () => {
             };
         });
         let showingFrom = json.total_ticket > 0 ? (page - 1) * limit + 1 : 0;
-        let showingTill: any;
+        let showingTill: number;
         if (totalRecords) {
             showingTill = Math.min(json.total_ticket, page * limit);
         }
-        setPaginationState((previousState: any) => {
+        setPaginationState((previousState: pagination_prev_state) => {
             return {
                 ...previousState,
                 showingFrom: showingFrom,
@@ -219,7 +188,7 @@ const Myticket = () => {
         setAllTicket(json.all_ticket);
     }
 
-    const sortOnlyPriority = async (e: any) => {
+    const sortOnlyPriority = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/all_category_ticket`, {
             method: 'POST',
             headers: {
@@ -252,7 +221,7 @@ const Myticket = () => {
         });
         const json = await response.json()
         let totalRecords = json.all_category_ticket.length;
-        setState((previousState: any) => {
+        setState((previousState: prev_state) => {
             return {
                 ...previousState,
                 appAgents: showingFrom,
@@ -260,11 +229,11 @@ const Myticket = () => {
             };
         });
         let showingFrom = (page - 1) * limit + 1;
-        let showingTill: any;
+        let showingTill: number;
         if (totalRecords) {
             showingTill = Math.min(json.total_ticket, page * limit);
         }
-        setPaginationState((previousState: any) => {
+        setPaginationState((previousState: pagination_prev_state) => {
             return {
                 ...previousState,
                 showingFrom: showingFrom,
@@ -273,47 +242,15 @@ const Myticket = () => {
         });
         setAllTicket(json.all_category_ticket);
     }
-    const sortCategory = async (e: any) => {
-        setSortcategory(e.target.value);
-        const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/all_category_ticket`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                From: "6443a634bdb1dce451fd7e95",
-                category: e.target.value
-            })
-        });
-        const json = await response.json()
-        setAllTicket(json.all_category_ticket);
-    }
-    const sortStatus = async (e: any) => {
-        setSortcategory(e.target.value);
-        const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/all_status_ticket`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                From: "6443a634bdb1dce451fd7e95",
-                // category: sortcategory,
-                // priority: sortpriority,
-                status: e.target.value
-            })
-        });
-        const json = await response.json()
-        setAllTicket(json.all_category_ticket);
-    }
 
-    const sort_Priority = (e: any) => {
+    const sort_Priority = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSortpriority(e.target.value);
     }
 
-    const sort_Status = (e: any) => {
+    const sort_Status = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSortstatus(e.target.value);
     }
-    const onChange = (e: any) => {
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSvalue(e.target.value);
     }
     const searchTicket = async () => {
@@ -336,7 +273,7 @@ const Myticket = () => {
         );
         const json = await response.json();
         let totalRecords = json.all_search_ticket.length;
-        setState((previousState: any) => {
+        setState((previousState: prev_state) => {
             return {
                 ...previousState,
                 appAgents: showingFrom,
@@ -344,11 +281,11 @@ const Myticket = () => {
             };
         });
         let showingFrom = (paginationState.page - 1) * paginationState.itemsPerPage + 1;
-        let showingTill: any;
+        let showingTill: number;
         if (totalRecords) {
             showingTill = Math.min(json.total_ticket, paginationState.page * paginationState.itemsPerPage);
         }
-        setPaginationState((previousState: any) => {
+        setPaginationState((previousState: pagination_prev_state) => {
             return {
                 ...previousState,
                 showingFrom: showingFrom,
@@ -358,7 +295,7 @@ const Myticket = () => {
         setAllTicket(json.all_search_ticket);
     }
 
-    const updateCompletedPercent = async (ticket_id: string, next_completion: any) => {
+    const updateCompletedPercent = async (ticket_id: string, next_completion: React.ChangeEvent<HTMLSelectElement>) => {
         const response = await fetch(
             `${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/update_completion`,
             {
@@ -374,6 +311,12 @@ const Myticket = () => {
         );
         const json = await response.json();
         getAllTicket(paginationState.page, paginationState.itemsPerPage);
+        if (json.message == "success") {
+            showToast(`Completion ${next_completion.target.value}% Change Successfully`, "success");
+        }
+        else {
+            showToast(json.message.error, "error");
+        }
     }
 
     const [currentStatusId, setCurrentStatusId] = useState("")
@@ -399,6 +342,12 @@ const Myticket = () => {
         const json = await response.json();
         setShowstatusBar(false);
         getAllTicket(paginationState.page, paginationState.itemsPerPage);
+        if (json.message == "success") {
+            showToast(`Status Change Successfully`, "success");
+        }
+        else {
+            showToast(json.message.error, "error");
+        }
     }
 
     const [showFilter, setShowFilter] = useState(false)
@@ -427,14 +376,7 @@ const Myticket = () => {
         setTransferUserId(selectedOption.value);
     };
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
-
-    const handleClick = (event: any) => {
-        setAnchorEl(event.currentTarget);
-    }
-    const handleClose = () => {
-        setAnchorEl(null);
-    }
+    
 
     const onClickTableHeader = (event: any) => {
         const newSortObj = onChangeSortObj(event, sortState);
@@ -447,7 +389,13 @@ const Myticket = () => {
     const getAllUser = async () => {
 
         const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/get_user`, {
-            method: 'Get'
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                loginUserId: userId
+            })
         });
         const json = await response.json()
         const already_user = new Map();
@@ -480,11 +428,10 @@ const Myticket = () => {
     const [showStatusBar, setShowstatusBar] = useState(false)
     const [showDown, setShowDown] = useState(false)
     const show_down = () => {
-        if(showDown)
-        {
+        if (showDown) {
             setShowDown(false);
         }
-        else{
+        else {
             setShowDown(true);
         }
     }
@@ -595,7 +542,7 @@ const Myticket = () => {
         let str1: string = str.charAt(0).toUpperCase() + str.slice(1);
         let filteredData = [{ _id: "", name: "", color: "" }]
         filteredData = status1.filter((item: any) =>
-        item.name.includes(str1)
+            item.name.includes(str1)
         );
         setStatus2(filteredData);
     }
@@ -645,7 +592,6 @@ const Myticket = () => {
                 </div>
                 <ToastContainer />
                 <TicketDetail _ticketdetail={ticketdetail} />
-                {/* <AddUser _userdetail={adduserdetail} /> */}
 
                 <div className="card-header py-5" >
                     <div className="card-title">
@@ -811,7 +757,7 @@ const Myticket = () => {
                                         id="subject"
                                         onClick={onClickTableHeader}
                                         className={clsx(
-                                            "min-w-125px table-sort cursor-pointer text-center text-black-50",
+                                            "table-sort cursor-pointer text-center text-black-50",
                                             {
                                                 "table-sort-asc":
                                                     sortState.sortOn === "subject" &&
@@ -823,10 +769,10 @@ const Myticket = () => {
                                                     sortState.sortBy === "desc",
                                             }
                                         )}>Title</th>
-                                    <th className="min-w-125px text-center text-black-50">Priority</th>
+                                    <th className="text-center text-black-50">Priority</th>
                                     <th className="text-black-50 text-center">Stauts</th>
                                     <th className="text-black-50">Completed %</th>
-                                    <th className="min-w-125px text-center text-black-50">Action</th>
+                                    <th className="text-center text-black-50">Action</th>
                                 </tr>
                             </thead>
                             <tbody className="fw-semibold text-gray-600">
@@ -843,41 +789,35 @@ const Myticket = () => {
                                             </Tooltip>
                                         </CopyToClipboard>
                                     </td>
-                                    <td className="text-center"><p style={{ fontSize: "1rem" }} className="my-4">{ticket.subject}</p></td>
+                                    <td className=""><p style={{ fontSize: "1rem" }} className="my-4">{ticket.subject}</p></td>
                                     <td className="text-center">
-                                        {/* <span style={{ color: `${mappriority.get(ticket.priority)?.[1]}` }} className="badge badge-sm badge-square badge-light-primary my-4">
-                                            {mappriority.get(ticket.priority)?.[0]}
-                                        </span> */}
-                                        <div style={{ cursor: "pointer" }} className="text-center">                                       
-                                        {mappriority.get(ticket.priority)?.[0] == "Low" && <FcLowPriority style={{ marginRight: "10px", fontSize: "16px" }} />}
-                                        {mappriority.get(ticket.priority)?.[0] == "Medium" && <FcMediumPriority style={{ marginRight: "10px", fontSize: "16px" }} />}
-                                        {mappriority.get(ticket.priority)?.[0] == "High" && <FcHighPriority style={{ marginRight: "10px", fontSize: "16px" }} />}{mappriority.get(ticket.priority)?.[0]} </div>
+                                        <div className="text-center">
+                                            {mappriority.get(ticket.priority)?.[0] == "Low" && <FcLowPriority style={{ marginRight: "10px", fontSize: "16px" }} />}
+                                            {mappriority.get(ticket.priority)?.[0] == "Medium" && <FcMediumPriority style={{ marginLeft: "20px", marginRight: "10px", fontSize: "16px" }} />}
+                                            {mappriority.get(ticket.priority)?.[0] == "High" && <FcHighPriority style={{ marginRight: "10px", fontSize: "16px" }} />}{mappriority.get(ticket.priority)?.[0]} </div>
                                     </td>
                                     <td className="text-center">
-                                        {/* <button onClick={show_status_bar} className="btn btn-success">Status</button> */}
                                         <Button
-                                            // onMouseEnter={show_down}
-                                            // onMouseLeave={show_down}
-                                            onClick={()=>show_status_bar(ticket._id)} style={{borderRadius: "50px", color: "white", backgroundColor: `${mapstatus.get(ticket.status)?.[1]}`}} variant="contained" size="small" className={classes.margin}>
-                                        {mapstatus.get(ticket.status)?.[0]} <AiFillCaretDown style={{marginLeft: "10px"}}/>
-                                            </Button>
+                                            onClick={() => show_status_bar(ticket._id)} style={{ borderRadius: "50px", color: "white", backgroundColor: `${mapstatus.get(ticket.status)?.[1]}` }} variant="contained" size="small" className={classes.margin}>
+                                            {mapstatus.get(ticket.status)?.[0]} <AiFillCaretDown style={{ marginLeft: "10px" }} />
+                                        </Button>
                                         {showStatusBar && <div
-                                                className="menu menu-sub menu-sub-dropdown w-250px w-md-300px show"
-                                                style={{ zIndex: "105", position: "fixed", inset: "0px auto auto", margin: "0px", transform: "translate(40%, 170%)" }}
-                                            >
-                                                <div className="separator border-gray-200"></div>
-                                                <div className="px-7 py-5">
-                                                <Input style={{width: "100%"}} onChange={searchStatus} className="my-3" name="searchstatus" placeholder="Search" error inputProps={ariaLabel} />
+                                            className="menu menu-sub menu-sub-dropdown w-250px w-md-300px show"
+                                            style={{ zIndex: "105", position: "fixed", inset: "0px auto auto", margin: "0px", transform: "translate(40%, 170%)" }}
+                                        >
+                                            <div className="separator border-gray-200"></div>
+                                            <div className="px-7 py-5">
+                                                <Input style={{ width: "100%" }} onChange={searchStatus} className="my-3" name="searchstatus" placeholder="Search" error inputProps={ariaLabel} />
                                                 {status2?.map(_status1 =>
-                                                    <div onClick={() => {set_current_status(_status1._id);updateStatus()}} className="row my-1" style={{cursor: "pointer"}}><div style={{color: `${_status1.color}`}} className="col-md-4"><BsFillCircleFill /></div><Tooltip title={`Change to ${_status1.name}`}><div className="col-md-4">{_status1.name}</div></Tooltip></div>
+                                                    <div onClick={() => { set_current_status(_status1._id); updateStatus() }} className="row my-1" style={{ cursor: "pointer" }}><div style={{ color: `${_status1.color}` }} className="col-md-4"><BsFillCircleFill /></div><Tooltip title={`Change to ${_status1.name}`}><div className="col-md-4">{_status1.name}</div></Tooltip></div>
                                                 )}
-                                                    <div className="d-flex justify-content-end">
-                                                    </div>
+                                                <div className="d-flex justify-content-end">
                                                 </div>
-                                            </div>}
+                                            </div>
+                                        </div>}
                                     </td>
                                     <td className="text-center">
-                                        <div className="row" style={{ width: "150px" }}>
+                                        <div className="row">
                                             <div className="col padding-0">
                                                 <div className='d-flex flex-stack mb-2'>
                                                     <span className='text-muted me-2 fs-7 fw-semibold'>{ticket.complete}%</span>
@@ -901,11 +841,6 @@ const Myticket = () => {
                                                     <option value="50">50%</option>
                                                     <option value="75">75%</option>
                                                     <option value="100">100%</option>
-                                                    {/* {(mappriority.get(ticket.complete) !== 0) && <option value="0">0%</option>}
-                                                    {(mappriority.get(ticket.complete) !== 25) && <option value="25">25%</option>}
-                                                    {(mappriority.get(ticket.complete) !== 50) && <option value="50">50%</option>}
-                                                    {(mappriority.get(ticket.complete) !== 75) && <option value="75">75%</option>}
-                                                    {(mappriority.get(ticket.complete) !== 100) && <option value="100">100%</option>} */}
                                                 </select>
                                             </div>
                                         </div>

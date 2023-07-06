@@ -90,7 +90,7 @@ const CreateTicket = (props: user_id) => {
                     }
                     formdata.append('myfile', myfile.attachFile, myfile.attachFile.name);
                     formdata.append('From', props.loginUserId);
-                    let url = '${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/upload_file';
+                    let url = `${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/upload_file`;
                     try {
                         response1 = await axios.post(url, formdata);
                     }
@@ -107,6 +107,7 @@ const CreateTicket = (props: user_id) => {
                 for (let i = 0; i < selectedOptions.length; i++) {
                     all_send_to.push(selectedOptions[i].value);
                 }
+                console.log(response1, "response1");
                 const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/create_ticket`, {
                     method: 'POST',
                     headers: {
@@ -183,10 +184,16 @@ const CreateTicket = (props: user_id) => {
         setStatus(status_array);
     }
 
-    const getAllUser = async () => {
-
+    const getAllUser = async () => {   
+        
         const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/get_user`, {
-            method: 'Get'
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                loginUserId: props.loginUserId
+            })
         });
         const json = await response.json()
         setUserOptions(json.all_user);
@@ -266,16 +273,6 @@ const CreateTicket = (props: user_id) => {
 
                     {/* begin::Form group Status and SendTo */}
                     <div className='row fv-row mb-38 my-5'>
-                        {/* <div className='col-xl-6'>
-                            <div className="mb-10 my-5">
-                                <input type="file" onChange={postUpload} id="post" name="post" />
-                            </div>
-                        </div>
-                        <div className='col-xl-6'>
-                            <div className="mb-10 my-5">
-                                <h5>Maximum file Size 25MB</h5>
-                            </div>
-                        </div> */}
                         <div className='col-xl-6'>
                             <div className="mb-10 my-5">
                                 <div className="frame">
@@ -305,6 +302,7 @@ const CreateTicket = (props: user_id) => {
                         <Select
                             isMulti
                             name="name"
+                            // defaultValue={alreadyArrayAssingedUser}
                             onChange={handleSelectChange}
                             options={userOptions}
                             className="basic-multi-select"
@@ -312,7 +310,7 @@ const CreateTicket = (props: user_id) => {
                         />
                     </div>
                     {/* end::Form group */}
-                    <div className="modal-footer">
+                    <div className="modal-footer my-5">
                         <button
                             type="button"
                             className="btn btn-danger mx-4"

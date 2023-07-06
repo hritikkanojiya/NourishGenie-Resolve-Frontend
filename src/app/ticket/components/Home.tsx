@@ -16,10 +16,9 @@ import Select from 'react-select';
 import CopyToClipboard from "react-copy-to-clipboard";
 import { PaginationComponent } from "../../common/components/pagination/PaginationComponent";
 import { showToast } from "../../common/toastify/toastify.config";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { BiRefresh } from 'react-icons/bi';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import Input from '@mui/material/Input';
 import Tooltip from '@mui/material/Tooltip';
 import { useParams } from 'react-router-dom';
 import {
@@ -38,10 +37,17 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const ariaLabel = {
-    'aria-label': 'description',
-    //   )
-};
+interface prev_state {
+    appAgents: number,
+    agentsCount: number
+}
+
+interface pagination_prev_state {
+itemsPerPage: number,
+showingFrom: number,
+showingTill: number,
+page: number,
+}
 
 const Home = () => {
 
@@ -49,14 +55,11 @@ const Home = () => {
 
     const page = 1;
     const currentPage = 1;
-    const [state, setState] = useState<{
-        appAgents: string;
-        agentsCount: number;
-    }>({
-        appAgents: '',
+    const [state, setState] = useState<prev_state>({
+        appAgents: 0,
         agentsCount: 0,
     });
-    const [paginationState, setPaginationState] = useState({
+    const [paginationState, setPaginationState] = useState<pagination_prev_state>({
         itemsPerPage: 10,
         showingFrom: 1,
         showingTill: 10,
@@ -82,10 +85,8 @@ const Home = () => {
     const [userOptions, setUserOptions] = useState([{ value: "", label: "" }]);
     const [selectedOptions, setSelectedOptions] = useState([{ value: "", label: "" }]);
     const [sortpriority, setSortpriority] = useState("");
-    const [sortcategory, setSortcategory] = useState("");
     const [sortstatus, setSortstatus] = useState("");
     const [mappriority, setMappriority] = useState(new Map());
-    // const [mapcategory, setMapcategory] = useState(new Map());
     const [mapstatus, setMapstatus] = useState(new Map());
     const [allreadyusermap, setAllreadyusermap] = useState(new Map());
     const [priority1, setPriority1] = useState([{ _id: "", name: "", color: "" }]);
@@ -104,7 +105,6 @@ const Home = () => {
             return;
         }
 
-        // console.log(REACT_APP_GENIE_RESOLVE_API, REACT_APP_GENIE_RESOLVE_VERSION, "REACT_APP_GENIE_RESOLVE_VERSION");
         const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/all_ticket`, {
             method: 'POST',
             headers: {
@@ -125,9 +125,6 @@ const Home = () => {
         const ticket_priority1 = [];
         const ticket_category1 = [];
         const ticket_status1 = [];
-        // const allready_user = [{ value: '', label: '' }];
-
-        // setAllreadyuserOptions(allready_user);
         for (let i = 0; i < json.priority_detail.length; i++) {
             ticket_priority.set(json.priority_detail[i]._id, [json.priority_detail[i].name, json.priority_detail[i].color]);
             ticket_priority1.push({ _id: json.priority_detail[i]._id, name: json.priority_detail[i].name, color: json.priority_detail[i].color });
@@ -147,7 +144,7 @@ const Home = () => {
         setStatus1(ticket_status1);
 
         let totalRecords = json.all_ticket.length;
-        setState((previousState: any) => {
+        setState((previousState: prev_state) => {
             return {
                 ...previousState,
                 appAgents: showingFrom,
@@ -159,7 +156,7 @@ const Home = () => {
         if (totalRecords) {
             showingTill = Math.min(json.total_ticket, page * limit);
         }
-        setPaginationState((previousState: any) => {
+        setPaginationState((previousState: pagination_prev_state) => {
             return {
                 ...previousState,
                 showingFrom: showingFrom,
@@ -185,7 +182,7 @@ const Home = () => {
         });
         const json = await response.json()
         let totalRecords = json.all_category_ticket.length;
-        setState((previousState: any) => {
+        setState((previousState: prev_state) => {
             return {
                 ...previousState,
                 appAgents: showingFrom,
@@ -197,7 +194,7 @@ const Home = () => {
         if (totalRecords) {
             showingTill = Math.min(json.total_ticket, page * limit);
         }
-        setPaginationState((previousState: any) => {
+        setPaginationState((previousState: pagination_prev_state) => {
             return {
                 ...previousState,
                 showingFrom: showingFrom,
@@ -235,7 +232,7 @@ const Home = () => {
         );
         const json = await response.json();
         let totalRecords = json.all_search_ticket.length;
-        setState((previousState: any) => {
+        setState((previousState: prev_state) => {
             return {
                 ...previousState,
                 appAgents: showingFrom,
@@ -247,7 +244,7 @@ const Home = () => {
         if (totalRecords) {
             showingTill = Math.min(json.total_ticket, paginationState.page * paginationState.itemsPerPage);
         }
-        setPaginationState((previousState: any) => {
+        setPaginationState((previousState: pagination_prev_state) => {
             return {
                 ...previousState,
                 showingFrom: showingFrom,
@@ -280,9 +277,17 @@ const Home = () => {
         const json = await response.json();
         setShowPriorityBar(false);
         getAllTicket(paginationState.page, paginationState.itemsPerPage);
+        if(json.message=="success")
+        {
+             showToast(`Priority Change Successfully`, "success");
+        }
+        else
+        {
+            showToast(json.message.error, "error");
+        }
     }
 
-    const updateCompletedPercent = async (ticket_id: string, next_completion: any) => {
+    const updateCompletedPercent = async (ticket_id: string, next_completion: React.ChangeEvent<HTMLSelectElement>) => {
         const response = await fetch(
             `${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/update_completion`,
             {
@@ -298,6 +303,14 @@ const Home = () => {
         );
         const json = await response.json();
         getAllTicket(paginationState.page, paginationState.itemsPerPage);
+        if(json.message=="success")
+        {
+             showToast(`Completion ${next_completion.target.value}% Change Successfully`, "success");
+        }
+        else
+        {
+            showToast(json.message.error, "error");
+        }
     }
 
     const [showFilter, setShowFilter] = useState(false)
@@ -345,7 +358,13 @@ const Home = () => {
     const getAllUser = async () => {
 
         const response = await fetch(`${REACT_APP_GENIE_RESOLVE_API}/${REACT_APP_GENIE_RESOLVE_VERSION}/ticketroutes/get_user`, {
-            method: 'Get'
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                loginUserId: userId
+            })
         });
         const json = await response.json()
         const already_user = new Map();
@@ -354,7 +373,6 @@ const Home = () => {
         }
         setAllreadyusermap(already_user);
         setUserOptions(json.all_user);
-
     }
 
     const onClickTableHeader = (event: any) => {
@@ -421,7 +439,6 @@ const Home = () => {
             setShowPriorityBar(false);
         }
         else {
-            // setAlreadyArrayAssingedUser(l);
             setShowPriorityBar(true);
             setcurrentTicketId(ticket_id);
         }
@@ -594,7 +611,7 @@ const Home = () => {
                                         id="subject"
                                         onClick={onClickTableHeader}
                                         className={clsx(
-                                            "min-w-125px table-sort cursor-pointer text-center text-black-50",
+                                            "min-w-125px table-sort text-center cursor-pointer text-black-50",
                                             {
                                                 "table-sort-asc":
                                                     sortState.sortOn === "subject" &&
@@ -606,9 +623,9 @@ const Home = () => {
                                                     sortState.sortBy === "desc",
                                             }
                                         )}>Title</th>
-                                    <th className="min-w-125px text-center text-black-50">Assigned To</th>
-                                    <th className="min-w-125px text-center text-black-50">Update Priority</th>
-                                    <th className="min-w-125px text-center text-black-50">Completed %</th>
+                                    <th className="min-w-125px text-black-50">Assigned To</th>
+                                    <th className="min-w-125px text-black-50"><div style={{marginLeft: "10px"}}>Update Priority</div></th>
+                                    <th className="min-w-125px text-black-50"><div style={{marginLeft: "12px"}}>Completed %</div></th>
                                     <th className="min-w-125px text-center text-black-50">Stauts</th>
                                     <th className="min-w-125px text-center text-black-50">Send Remainder</th>
                                 </tr>
@@ -627,7 +644,7 @@ const Home = () => {
                                             </Tooltip>
                                         </CopyToClipboard>
                                     </td>
-                                    <td className="text-center">
+                                    <td className="">
                                         <span className="text-gray-800 mb-1">
                                             {ticket.subject}
                                         </span>
@@ -678,12 +695,6 @@ const Home = () => {
                                         </div>}
                                     </td>
                                     <td style={{ cursor: "pointer" }} className="text-center" onClick={() => show_priority_bar(ticket._id)}>
-                                        {/* <select style={{ width: "110px" }} className="form-select form-select-solid" onChange={(e) => updatePriority(ticket._id, e)} name="priority" defaultValue={'DEFAULT'} aria-label="Default select example">
-                                        <option value={ticket.priority}>{mappriority.get(ticket.priority)?.[0]}</option>
-                                        {priority1?.map(_priority1 =>
-                                            <option style={{ color: `${_priority1.color}` }} value={_priority1._id}> {_priority1.name} </option>
-                                        )}
-                                    </select> */}
                                         {mappriority.get(ticket.priority)?.[0] == "Low" && <FcLowPriority style={{ marginRight: "10px", fontSize: "16px" }} />}
                                         {mappriority.get(ticket.priority)?.[0] == "Medium" && <FcMediumPriority style={{ marginRight: "10px", fontSize: "16px" }} />}
                                         {mappriority.get(ticket.priority)?.[0] == "High" && <FcHighPriority style={{ marginRight: "10px", fontSize: "16px" }} />}{mappriority.get(ticket.priority)?.[0]} {mappriority.get(ticket.priority)?.[0] == "Medium" ? <AiFillCaretDown style={{ marginLeft: "26px" }}  /> : <AiFillCaretDown style={{ marginLeft: "50px" }}  />}
@@ -695,9 +706,6 @@ const Home = () => {
                                                 {priority1?.map(_priority1 =>
                                                     <>
                                                         <div
-                                                        // className="low"
-                                                        // onMouseEnter={(event: any) => event.target.style = {color: 'red', fontSize: '50px'}}
-                                                        // onMouseLeave={(event: any) => event.target.style = {color: 'black'}}
                                                             onClick={() => { set_current_status(_priority1._id); updatePriority() }} style={{ cursor: "pointer" }}>
                                                             {_priority1.name == "Low" && <Tooltip title="Change to low priority"><div><FcLowPriority style={{marginRight: "15px"}} /> Low </div></Tooltip>}
                                                             {_priority1.name == "Medium" && <Tooltip title="Change to medium priority"><div className="my-3"><FcMediumPriority style={{marginRight: "15px"}} /> Medium</div></Tooltip>}
@@ -727,23 +735,17 @@ const Home = () => {
                                             </div>
                                             <div className="col padding-0">
                                                 <select style={{ height: "7px", width: "6px" }} className="form-select border-gray-100 my-4" onChange={(e) => updateCompletedPercent(ticket._id, e)} name="sendto" defaultValue={'DEFAULT'} aria-label="Default select example">
-                                                    {/* <option value="Default">{ticket.complete}</option> */}
                                                     <option value="0">0%</option>
                                                     <option value="25">25%</option>
                                                     <option value="50">50%</option>
                                                     <option value="75">75%</option>
                                                     <option value="100">100%</option>
-                                                    {/* {(mappriority.get(ticket.complete) !== 0) && <option value="0">0%</option>}
-                                                    {(mappriority.get(ticket.complete) !== 25) && <option value="25">25%</option>}
-                                                    {(mappriority.get(ticket.complete) !== 50) && <option value="50">50%</option>}
-                                                    {(mappriority.get(ticket.complete) !== 75) && <option value="75">75%</option>}
-                                                    {(mappriority.get(ticket.complete) !== 100) && <option value="100">100%</option>} */}
                                                 </select>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="mw-50px text-center">
-                                        <span style={{ color: `${mapstatus.get(ticket.status)?.[1]}` }} className="badge badge-sm badge-square badge-light-primary my-4">
+                                        <span style={{ color: `${mapstatus.get(ticket.status)?.[1]}`, fontSize: "12px" }} className="badge badge-sm badge-square badge-light-primary my-4">
                                             {mapstatus.get(ticket.status)?.[0]}
                                         </span>
                                     </td>
